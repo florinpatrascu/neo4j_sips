@@ -28,9 +28,17 @@ Run `mix do deps.get, deps.compile`
 Edit the `config/config.exs` and describe a Neo4j server endpoint, example:
 
     config :neo4j_sips, Neo4j,
-      url: "http://localhost:7474",
-      basic_auth: [username: "foo", password: "bar"]
+      url: "http://localhost:7474"
 
+
+If your server requires basic authentication, add this to your config file:
+      
+      basic_auth: [username: "foo", password: "bar"]
+      
+Or:
+      
+      token_auth: "bmVvNGo6dGVzdA==" # if using an authentication token?!
+  
 ### Example
 
 With a minimalist setup configured as above, and a Neo4j server running, we can connect to the server and run some queries using Elixir’s interactive shell ([IEx](http://elixir-lang.org/docs/stable/iex/IEx.html)):
