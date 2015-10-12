@@ -1,0 +1,13 @@
+/_build
+/deps
+/tmp
+erl_crash.dump
+*.ez
+tags
+.tags
+.tags_sorted_by_file
+
+# added by GitSavvy
+/tags_sorted_by_file
+*.sublime-project
+neo4j_sips.sublime-workspace
