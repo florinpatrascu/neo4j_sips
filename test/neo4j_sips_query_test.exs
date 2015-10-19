@@ -83,4 +83,16 @@ defmodule Neo4j.Sips.Query.Test do
     assert my_roles -- roles == [], "found more roles in the db than expected"
 
   end
+
+
+  test "query in a connection expecting results containing the graph data as well" do
+    conn = Neo4j.conn( %{resultDataContents: [ "row", "graph" ]})
+    {:ok, row: r, graph: g} = Neo4j.query(conn, "match (n:Person {neo4j_sips: true}) return n.name as Name limit 5")
+
+    assert List.first(r)["Name"] == "Patrick Rothfuss",
+           "missing 'The Name of the Wind' database, or data incomplete"
+
+    assert length(List.first(g)["nodes"]) == 0," invalid 'graph' contents"
+  end
+
 end

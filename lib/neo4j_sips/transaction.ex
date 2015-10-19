@@ -77,7 +77,7 @@ defmodule Neo4j.Sips.Transaction do
     if String.length(conn.commit_url) > 0 do
       commit_url = conn.commit_url
     end
-    Connection.send(:post, commit_url, Utils.neo4j_statements(statements))
+    Connection.send(:post, commit_url, Utils.neo4j_statements(statements, conn.options))
   end
 
   @doc """
@@ -89,7 +89,7 @@ defmodule Neo4j.Sips.Transaction do
     if String.length(conn.commit_url) > 0 do
       commit_url = conn.commit_url
     end
-    Connection.send(:post, commit_url, Utils.neo4j_statements([{statement, params}]))
+    Connection.send(:post, commit_url, Utils.neo4j_statements([{statement, params}], conn.options))
   end
 
   @doc """

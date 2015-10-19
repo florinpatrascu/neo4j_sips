@@ -1,5 +1,5 @@
 defmodule Neo4j.Sips.Connection do
-  defstruct [:server, :transaction_url, :server_version, :commit_url]
+  defstruct [:server, :transaction_url, :server_version, :commit_url, :options]
 
   use GenServer
 
@@ -26,7 +26,7 @@ defmodule Neo4j.Sips.Connection do
         conn = %Neo4j.Sips.Connection{server: server,
                                transaction_url: server.data.transaction,
                                server_version: server.data.neo4j_version,
-                               commit_url: ""}
+                               commit_url: "", options: nil}
         ConCache.put(:neo4j_sips_cache, :conn, conn)
         {:ok, conn}
       {:error, message} -> {:error, message}
@@ -69,11 +69,20 @@ defmodule Neo4j.Sips.Connection do
 
   @doc """
 
-  return a Connection containing the server details
+  return a Connection containing the server details. You can
+  specify some optional parameters i.e. graph_result.
+
+  graph_result is nil, by default, and can have the following values:
+  graph_result: ["row"], graph_result: ["graph"], or both:
+  graph_result: [ "row", "graph" ]
+
   """
-  @spec conn :: Neo4j.Sips.Connection
-  def conn do
-    ConCache.get(:neo4j_sips_cache, :conn)
+  def conn(options) do
+    Map.put(ConCache.get(:neo4j_sips_cache, :conn), :options, options)
+  end
+
+  def conn() do
+    conn = ConCache.get(:neo4j_sips_cache, :conn)
   end
 
   def server_version() do

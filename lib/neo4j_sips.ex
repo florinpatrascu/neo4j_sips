@@ -43,6 +43,19 @@ defmodule Neo4j.Sips do
 
   ## Connection
 
+  @doc """
+
+  return a Connection containing the server details. You can
+  specify some optional parameters i.e. graph_result.
+
+  graph_result is nil, by default, and can have the following values:
+  graph_result: ["row"], graph_result: ["graph"], or both:
+  graph_result: [ "row", "graph" ]
+
+  """
+  defdelegate conn(options), to: Connection
+
+  # until defdelegate allows optional args?!
   defdelegate conn(), to: Connection
 
   @doc """
