@@ -82,7 +82,7 @@ defmodule Neo4j.Sips.Connection do
   end
 
   def conn() do
-    conn = ConCache.get(:neo4j_sips_cache, :conn)
+    ConCache.get(:neo4j_sips_cache, :conn)
   end
 
   def server_version() do
