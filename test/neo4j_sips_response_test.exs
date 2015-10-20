@@ -26,7 +26,7 @@ defmodule Neo4j.Sips.Response.Test do
     sip = Poison.decode!(TestHelper.read_whole_file(path), as: Response)
     {:ok, rows} = Response.to_rows(sip)
 
-    assert [%{"n" => %{"name" => "My Node"}}] = List.first rows
+    assert [%{"n" => %{"name" => "My Node"}}] = rows
     assert %{"expires" => "Sun, 9 Aug 2015 14:33:42 +0000"} = sip.transaction
   end
 end
