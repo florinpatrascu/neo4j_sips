@@ -23,13 +23,13 @@ defmodule Neo4jSips.Mixfile do
   end
 
   defp deps do
-    [{:httpoison, "~> 0.7"},
-     {:poison, "~> 1.4.0"},
+    [{:httpoison, "~> 0.7.4"},
+     {:poison, "~> 1.5.0"},
      {:con_cache, "~> 0.9.0"},
-     {:poolboy, "~> 1.5"},
-     {:ex_doc, "~> 0.7", only: :docs},
-     {:earmark, "~> 0.1", only: :docs},
-     {:inch_ex, only: :docs}]
+     {:poolboy, "~> 1.5.1"},
+     {:ex_doc, "~> 0.10.0", only: :docs},
+     {:earmark, "~> 0.1.18", only: :docs},
+     {:inch_ex, "~> 0.4.0", only: :docs}]
   end
 
   defp package do
