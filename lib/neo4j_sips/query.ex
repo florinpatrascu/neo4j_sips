@@ -41,7 +41,7 @@ defmodule Neo4j.Sips.Query do
     end
   end
 
-  defp query_response(response, options \\ nil) do
+  defp query_response(response, options) do
     if options do
       Response.to_options(response, options)
     else
