@@ -46,8 +46,8 @@ defmodule Neo4j.Sips.Query do
       Response.to_options(response, options)
     else
       case Response.to_rows(response) do
-        {:error, reason} -> {:error, List.first(reason)}
-        {:ok, rows} -> {:ok, List.first(rows)}
+        {:error, reason} -> {:error, reason}
+        {:ok, rows} -> {:ok, rows}
       end
     end
   end

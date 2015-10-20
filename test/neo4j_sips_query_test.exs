@@ -21,10 +21,11 @@ defmodule Neo4j.Sips.Query.Test do
         (Chandrian)-[:ACTED_IN {roles:['killer']}]->(TNOTW),
         (Patrick)-[:WROTE]->(TNOTW)
     """
-    assert {:ok, rows} = Neo4j.query(Neo4j.conn, String.split(batch_cypher, ";") # different command behavior in the same lot/batch
-                         |> Enum.map(&(String.strip(&1)))
-                         |> Enum.filter(&(String.length(&1) > 0)))
-    refute length(rows) > 0, "Can't initialize the 'The Name of the Wind' database"
+
+    assert {:ok, _rows} = Neo4j.query(Neo4j.conn, String.split(batch_cypher, ";") # different command behavior in the same lot/batch
+                          |> Enum.map(&(String.strip(&1)))
+                          |> Enum.filter(&(String.length(&1) > 0)))
+
     :ok
   end
 
@@ -35,10 +36,11 @@ defmodule Neo4j.Sips.Query.Test do
   end
 
   test "executing a Cypher query, with parameters" do
-    cypher = "match (n:Person {neo4j_sips: true}) where n.name = {name} return n.name as name limit 1"
+    cypher = "match (n:Person {neo4j_sips: true}) where n.name = {name} return n.name as name"
     case Neo4j.query(Neo4j.conn, cypher, %{name: "Kote"}) do
       {:ok, row} ->
         refute length(row) == 0, "Did you initialize the 'The Name of the Wind' database?"
+        refute length(row) > 1, "Kote?! There is only one!"
         assert List.first(row)["name"] == "Kote", "expecting to find Kote"
       {:error, reason} -> IO.puts "Error: #{reason["message"]}"
     end
@@ -52,6 +54,8 @@ defmodule Neo4j.Sips.Query.Test do
              { name: p.name, label:head(labels(p))} AS person
     """
     {:ok, r} = Neo4j.query(Neo4j.conn, cypher)
+
+    assert length(r) == 3, "you're missing some characters from the 'The Name of the Wind' db"
 
     if row = List.first(r) do
       assert row["name"] == "Patrick Rothfuss",
@@ -67,7 +71,7 @@ defmodule Neo4j.Sips.Query.Test do
   end
 
   test "if Patrick Rothfuss wrote The Name of the Wind" do
-    cypher = "MATCH (p:Person)-[r:WROTE]->(b:Book {title: 'The Name of the Wind'}) RETURN p LIMIT 1"
+    cypher = "MATCH (p:Person)-[r:WROTE]->(b:Book {title: 'The Name of the Wind'}) RETURN p"
     rows = Neo4j.query!(Neo4j.conn, cypher)
     assert List.first(rows)["p"]["name"] == "Patrick Rothfuss"
   end
@@ -85,14 +89,20 @@ defmodule Neo4j.Sips.Query.Test do
   end
 
 
-  test "query in a connection expecting results containing the graph data as well" do
-    conn = Neo4j.conn( %{resultDataContents: [ "row", "graph" ]})
-    {:ok, row: r, graph: g} = Neo4j.query(conn, "match (n:Person {neo4j_sips: true}) return n.name as Name limit 5")
+  test "results in graph format" do
+    conn   = Neo4j.conn( %{resultDataContents: [ "row", "graph" ]})
+    cypher = """
+      CREATE (bike:Bike {weight: 10, neo4j_sips: true})
+      CREATE (frontWheel:Wheel {spokes: 3, neo4j_sips: true})
+      CREATE (backWheel:Wheel {spokes: 32, neo4j_sips: true})
+      CREATE p1 = (bike)-[:HAS {position: 1} ]->(frontWheel)
+      CREATE p2 = (bike)-[:HAS {position: 2} ]->(backWheel)
+      RETURN bike, p1, p2
+    """
+    {:ok, data} = Neo4j.query( conn, cypher)
 
-    assert List.first(r)["Name"] == "Patrick Rothfuss",
-           "missing 'The Name of the Wind' database, or data incomplete"
-
-    assert length(List.first(g)["nodes"]) == 0," invalid 'graph' contents"
+    assert length(data[:graph]["nodes"]) == 3, "invalid graph, missing nodes info"
+    assert length(data[:graph]["relationships"]) == 2, "invalid graph, missing relationships info"
   end
 
 end
