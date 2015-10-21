@@ -1,7 +1,7 @@
 Neo4j.Sips
 ==========
 
-A simple Elixir wrapper around the Neo4j graph database REST API. It is aiming to help Elixir developers to play with [Neo4j](http://neo4j.com/developer/get-started/), and to eventually become the main support for a future [Ecto](https://github.com/elixir-lang/ecto) adapter.
+A simple Elixir wrapper around the Neo4j graph database REST API. It is aiming to help the Elixir developers explore [Neo4j](http://neo4j.com/developer/get-started/), and to eventually become the core of a future [Ecto](https://github.com/elixir-lang/ecto) adapter.
 
 ### Install
 
@@ -29,13 +29,14 @@ Then add the `neo4j_sips` dependency the applications list:
       [applications: [:logger, :neo4j_sips]]
     end
 
-Run `mix do deps.get, deps.compile`
 
 Edit the `config/config.exs` and describe a Neo4j server endpoint, example:
 
     config :neo4j_sips, Neo4j,
       url: "http://localhost:7474"
 
+
+Run `mix do deps.get, deps.compile`
 
 If your server requires basic authentication, add this to your config file:
       
