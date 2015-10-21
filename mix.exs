@@ -34,6 +34,7 @@ defmodule Neo4jSips.Mixfile do
 
   defp package do
     %{licenses: ["MIT"],
+      maintainers: ["Florin T. Patrascu"],
       links: %{"GitHub" => "https://github.com/florinpatrascu/neo4j_sips"}}
   end
 end
