@@ -2,6 +2,7 @@
 defmodule Neo4j.Sips.Query.Test do
   use ExUnit.Case, async: true
 
+  alias Neo4j.Sips.Utils
   alias Neo4j.Sips, as: Neo4j
 
   setup_all do
@@ -85,7 +86,6 @@ defmodule Neo4j.Sips.Query.Test do
     roles = ["killer", "sword fighter","magician","musician","many talents"]
     my_roles = Enum.map(rows, &(&1["roles"])) |> List.flatten
     assert my_roles -- roles == [], "found more roles in the db than expected"
-
   end
 
 
@@ -99,10 +99,15 @@ defmodule Neo4j.Sips.Query.Test do
       CREATE p2 = (bike)-[:HAS {position: 2} ]->(backWheel)
       RETURN bike, p1, p2
     """
+
     {:ok, data} = Neo4j.query( conn, cypher)
 
-    assert length(data[:graph]["nodes"]) == 3, "invalid graph, missing nodes info"
-    assert length(data[:graph]["relationships"]) == 2, "invalid graph, missing relationships info"
+    graph = data[:graph]
+    assert length(Utils.get_element(graph, "nodes"))
+            == 3, "invalid graph, missing nodes info"
+
+    assert length(Utils.get_element(graph, "relationships"))
+            == 2, "invalid graph, missing relationships info"
   end
 
 end

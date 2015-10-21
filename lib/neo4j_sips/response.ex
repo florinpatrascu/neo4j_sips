@@ -60,7 +60,7 @@ defmodule Neo4j.Sips.Response do
       :graph ->
         response["data"]
         |> Enum.map(fn data -> Map.get(data, row_or_graph) end)
-        |> List.first
+
     end
   end
 

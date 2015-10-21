@@ -23,6 +23,13 @@ defmodule Neo4j.Sips.Utils do
     make_neo4j_statements(queries, [], options)
   end
 
+  @doc """
+  use a collection for finding and extracting elements with a given name
+  """
+  def get_element(c, name) do
+    Enum.map(c, &(Map.get(&1, name))) |> List.first
+  end
+
   # private stuff
 
   defp make_neo4j_statements([], acc, _options) do
