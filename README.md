@@ -8,6 +8,12 @@ A simple Elixir wrapper around the Neo4j graph database REST API. It is aiming t
 Edit mix.ex and add the `neo4j_sips` dependency to the `deps/1 `function:
 
     defp deps do
+      [{:neo4j_sips, "~> 0.1"}]
+    end
+
+or Github:
+
+    defp deps do
       [{:neo4j_sips, github: "florinpatrascu/neo4j_sips"}]
     end
 
