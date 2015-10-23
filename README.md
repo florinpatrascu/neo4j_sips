@@ -33,7 +33,7 @@ Then add the `neo4j_sips` dependency the applications list:
 Edit the `config/config.exs` and describe a Neo4j server endpoint, example:
 
     config :neo4j_sips, Neo4j,
-      url: "http://localhost:7474"
+      url: "http://localhost:7474",
       pool_size: 5,
       max_overflow: 2,
       timeout: 30
