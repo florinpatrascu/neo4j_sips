@@ -1,5 +1,6 @@
 defmodule Neo4j.Sips do
   @moduledoc """
+
   A module that provides a simple Interface to communicate with a
   Neo4j server via REST. All functions take a pool to run the query on.
 
@@ -10,27 +11,21 @@ defmodule Neo4j.Sips do
   alias Neo4j.Sips.Query
 
   @config Application.get_env(:neo4j_sips, Neo4j)
-  @version "0.1.0"
   @pool_name :neo4j_sips_pool
 
   if !@config, do: raise "Neo4j.Sips is not configured"
   if !Dict.get(@config, :url), do: raise "Neo4j.Sips requires the :url of the database"
 
-  def version do
-    @version
-  end
-
   @doc false
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
-
     ConCache.start_link([], name: :neo4j_sips_cache)
 
     poolboy_config = [
       name: {:local, @pool_name},
       worker_module: Neo4j.Sips.Connection,
-      size: config(:pool_size),
-      max_overflow: config(:max_overflow)
+      size: config(:pool_size, 1),
+      max_overflow: config(:max_overflow, 0)
     ]
 
     children = [
@@ -44,23 +39,29 @@ defmodule Neo4j.Sips do
   ## Connection
 
   @doc """
-
-  return a Connection containing the server details. You can
+  returns a Connection containing the server details. You can
   specify some optional parameters i.e. graph_result.
 
   graph_result is nil, by default, and can have the following values:
-  graph_result: ["row"], graph_result: ["graph"], or both:
-  graph_result: [ "row", "graph" ]
+
+      graph_result: ["row"]
+      graph_result: ["graph"]
+  or both:
+
+      graph_result: [ "row", "graph" ]
 
   """
   defdelegate conn(options), to: Connection
 
   # until defdelegate allows optional args?!
+  @doc """
+  returns a Neo4j.Sips.Connection
+  """
   defdelegate conn(), to: Connection
 
   @doc """
 
-  return the server version
+  returns the server version
   """
   @spec server_version() :: String.t
   defdelegate server_version(), to: Connection
@@ -69,8 +70,8 @@ defmodule Neo4j.Sips do
   ########################
 
   @doc """
-  sends the query (and its parameters) to the server and returns {:ok, Neo4j.Sips.Response} or
-  {:error, error} otherwise
+  sends the query (and its parameters) to the server and returns `{:ok, Neo4j.Sips.Response}` or
+  `{:error, error}` otherwise
   """
   @spec query(Neo4j.Sips.Connection, String.t) :: {:ok, Neo4j.Sips.Response} | {:error, Neo4j.Sips.Error}
   defdelegate query(conn, statement), to: Query
@@ -139,14 +140,45 @@ defmodule Neo4j.Sips do
   @spec tx_rollback(Neo4j.Sips.Connection) :: Neo4j.Sips.Connection
   defdelegate tx_rollback(conn), to: Transaction
 
-  ########################
-  # @doc false
-  # def start do
-  #   :application.ensure_all_started(:neo4j_sips)
-  # end
+  @doc """
+  list all property keys ever used in the database. This also includes any property
+  keys you have used, but deleted. There is currently no way to tell which ones
+  are in use and which ones are not, short of walking the entire set of properties
+  in the database.
+  """
+  @spec property_keys() :: List.t | []
+  def property_keys do
+    property_keys_url = Neo4j.Sips.conn.server.data_url <> "propertykeys"
+    Connection.send(:get, property_keys_url)
+  end
 
-  @doc false
-  def config, do: @config
+  @doc """
+   returns an environment specific Neo4j.Sips configuration.
+
+   Example of valid configurations (i.e. defined in config/dev.exs):
+
+      # Neo4j server not requiring authentication
+      config :neo4j_sips, Neo4j,
+        url: "http://localhost:7474"
+
+      # Neo4j server with username and password authentication
+      config :neo4j_sips, Neo4j,
+        url: "http://localhost:7474",
+        pool_size: 5,
+        max_overflow: 2,
+        timeout: 30,
+        basic_auth: [username: "neo4j", password: "neo4j"]
+
+      # or using a token
+      config :neo4j_sips, Neo4j,
+        url: "http://localhost:7474",
+        pool_size: 10,
+        max_overflow: 5,
+        timeout: :infinity,
+        token_auth: "bmVvNGo6dGVzdA=="
+
+  """
+  def config, do: Application.get_env(:neo4j_sips, Neo4j)
 
   @doc false
   def config(key), do: Dict.get(config, key)
@@ -154,6 +186,7 @@ defmodule Neo4j.Sips do
   @doc false
   def config(key, default), do: Dict.get(config, key, default)
 
+  @doc false
   def pool_name, do: @pool_name
 
 end

@@ -16,10 +16,12 @@ defmodule Neo4j.Sips.Connection do
   """
   @spec start_link(Keyword.t) :: GenServer.on_start
   def start_link(params) do
+    # IO.puts("#{inspect(__MODULE__)}:start_link " <> inspect(params))
     GenServer.start_link(__MODULE__, params, [])
   end
 
   ## Server callbacks
+  @doc false
   def init(opts) do
     case Server.init opts do
       {:ok, server} ->
@@ -33,24 +35,25 @@ defmodule Neo4j.Sips.Connection do
     end
   end
 
+  @doc false
   def handle_call(data, _from, state) do
-    response = case data do
-      {:post, url, body} ->
-        HTTP.post!(url, body)
-      {:delete, url, _} ->
-        HTTP.delete!(url)
+    result = case data do
+      {:post, url, body} -> decode_as_response(HTTP.post!(url, body).body)
+      {:delete, url, _}  -> decode_as_response(HTTP.delete!(url).body)
+      {:get, url, _} ->
+          case HTTP.get(url) do
+            {:ok, %HTTPoison.Response{body: body, headers: headers, status_code: 200}} ->
+                Poison.decode!(body)
+            {:error, %HTTPoison.Error{id: id, reason: reason}} -> {:error, reason}
+            {:ok, _} -> []
+          end
     end
-
-    result = case Poison.decode(response.body, as: Neo4j.Sips.Response) do
-      {:ok, sip} -> {:ok, sip}
-      error      -> {:error, error}
-    end
-
     # :random.seed(:os.timestamp)
     # timeout = state[:timeout] || 5000
     {:reply, result, state}
   end
 
+  @doc false
   def send(method, conn, body \\ "") do
     pool_server(method, conn, body)
   end
@@ -62,31 +65,48 @@ defmodule Neo4j.Sips.Connection do
     )
   end
 
+  @doc false
   def terminate(_reason, _state) do
     :ok
   end
 
 
   @doc """
-
-  return a Connection containing the server details. You can
+  returns a Connection containing the server details. You can
   specify some optional parameters i.e. graph_result.
 
   graph_result is nil, by default, and can have the following values:
-  graph_result: ["row"], graph_result: ["graph"], or both:
-  graph_result: [ "row", "graph" ]
+
+      graph_result: ["row"]
+      graph_result: ["graph"]
+  or both:
+
+      graph_result: [ "row", "graph" ]
 
   """
   def conn(options) do
     Map.put(ConCache.get(:neo4j_sips_cache, :conn), :options, options)
   end
 
+  @doc """
+  returns a Neo4j.Sips.Connection
+  """
   def conn() do
     ConCache.get(:neo4j_sips_cache, :conn)
   end
 
+  @doc """
+  returns the version of the Neo4j server you're connected to
+  """
   def server_version() do
-   conn.server_version
+    conn.server_version
+  end
+
+  defp decode_as_response(resp) do
+    case Poison.decode(resp, as: Neo4j.Sips.Response) do
+      {:ok, sip} -> {:ok, sip}
+      error      -> {:error, error}
+    end
   end
 
 end
