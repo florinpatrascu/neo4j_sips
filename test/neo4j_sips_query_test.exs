@@ -110,4 +110,14 @@ defmodule Neo4j.Sips.Query.Test do
             == 2, "invalid graph, missing relationships info"
   end
 
+  test "list all property keys ever used in the database" do
+    my_keys = ~w{title roles license released genre neo4j_sips name}
+    db_keys = Neo4j.property_keys
+
+    refute length(db_keys) == nil, "You must use a valid Neo4j database"
+
+    key_set = Enum.into(my_keys, HashSet.new)
+    assert length(Enum.filter(db_keys, &(HashSet.member?(key_set, &1)))) > 0
+  end
+
 end

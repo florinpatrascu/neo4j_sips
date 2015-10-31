@@ -1,23 +1,28 @@
 defmodule Neo4j.Sips.Utils do
   @moduledoc "Common utilities"
 
-  # Generate a random string.
+  @doc """
+  Generate a random string.
+  """
   def random_id, do: :random.uniform |> Float.to_string |> String.slice(2..10)
 
   @doc """
-  Given a list of queries i.e. [{"cypher statament ..."}, %{parameters...}], this
+  Given a list of queries i.e. `[{"cypher statement ..."}, %{parameters...}]`, this
   method will return a JSON that may look like this:
 
-  {
-    "statements" : [ {
-      "statement" : "CREATE (n {props}) RETURN n",
-      "parameters" : {
-        "props" : {
-          "name" : "My Node"
+    ````
+    {
+      "statements" : [ {
+        "statement" : "CREATE (n {props}) RETURN n",
+        "parameters" : {
+          "props" : {
+            "name" : "My Node"
+          }
         }
-      }
-    } ]
-  }
+      } ]
+    }
+    ````
+
   """
   def neo4j_statements(queries, options \\ nil) when is_list(queries) do
     make_neo4j_statements(queries, [], options)

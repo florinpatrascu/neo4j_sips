@@ -1,7 +1,7 @@
 defmodule Neo4jSips.Mixfile do
   use Mix.Project
 
-  @version "0.1.11"
+  @version "0.1.12"
 
   def project do
     [app: :neo4j_sips,
@@ -11,14 +11,16 @@ defmodule Neo4jSips.Mixfile do
      package: package,
      description: "A very simple and versatile Neo4J Elixir driver",
      name: "Neo4j.Sips",
-     docs: [extras: ["README.md"], main: "README",
+     docs: [extras: ["README.md"],
             source_ref: "v#{@version}",
             source_url: "https://github.com/florinpatrascu/neo4j_sips"]]
   end
 
   # Configuration for the OTP application
+  #
+  # Type `mix help compile.app` for more information
   def application do
-    [applications: [:logger, :httpoison, :con_cache],
+    [applications: [:logger, :httpoison, :poison, :con_cache],
      mod: {Neo4j.Sips, []}]
   end
 
