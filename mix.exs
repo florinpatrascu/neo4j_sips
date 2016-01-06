@@ -25,7 +25,7 @@ defmodule Neo4jSips.Mixfile do
   end
 
   defp deps do
-    [{:httpoison, "~> 0.7.4"},
+    [{:httpoison, "~> 0.8"},
      {:poison, "~> 1.5.0"},
      {:con_cache, "~> 0.9.0"},
      {:poolboy, "~> 1.5.1"},
