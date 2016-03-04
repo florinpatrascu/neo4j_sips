@@ -46,8 +46,7 @@ defmodule Neo4j.Sips.Connection do
       {:delete, url, _}  -> decode_as_response(HTTP.delete!(url).body)
       {:get, url, _} ->
           case HTTP.get(url) do
-            {:ok, %HTTPoison.Response{body: body, headers: headers, status_code: 200}} ->
-                Poison.decode!(body, keys: :atoms)
+            {:ok, %HTTPoison.Response{body: body, headers: headers, status_code: 200}} -> Poison.decode!(body)
             {:error, %HTTPoison.Error{id: id, reason: reason}} -> {:error, reason}
             {:ok, _} -> []
           end
