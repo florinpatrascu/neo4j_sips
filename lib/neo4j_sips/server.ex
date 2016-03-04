@@ -67,7 +67,7 @@ defmodule Neo4j.Sips.Server do
           {:ok, response_db_data} ->
             response_db_root = HTTP.get!("#{url}")
             %{data: data, management: management} = Poison.Parser.parse!(response_db_root.body, keys: :atoms!)
-            server_data = Poison.decode!(response_db_data.body, as: ServerData) # returned by: /db/data/
+            server_data = Poison.decode!(response_db_data.body, as: ServerData, keys: :atoms) # returned by: /db/data/
             %{node_labels: _node_labels, transaction: _transaction, neo4j_version: _neo4j_version}
                = Poison.Parser.parse!(response_db_data.body, keys: :atoms!)
             {:ok, %Neo4j.Sips.Server{

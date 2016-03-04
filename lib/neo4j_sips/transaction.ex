@@ -41,7 +41,7 @@ defmodule Neo4j.Sips.Transaction do
   def tx_begin(conn) do
     case Connection.send(:post, conn.transaction_url) do
       {:ok, response} ->
-        Map.put(conn, :commit_url, String.replace(response.commit, ~r{/commit}, ""))
+        Map.put(conn, :commit_url, String.replace(response["commit"], ~r{/commit}, ""))
       {:error, reason} -> {:error, List.first(reason)}
     end
   end

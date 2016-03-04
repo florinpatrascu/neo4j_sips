@@ -25,10 +25,14 @@ defmodule Neo4j.Sips.Connection do
   def init(opts) do
     case Server.init opts do
       {:ok, server} ->
-        conn = %Neo4j.Sips.Connection{server: server,
-                               transaction_url: server.data.transaction,
-                               server_version: server.data.neo4j_version,
-                               commit_url: "", options: nil}
+        conn = %Neo4j.Sips.Connection{
+                    server: server,
+                    transaction_url: server.data.transaction,
+                    server_version: server.data.neo4j_version,
+                    commit_url: "",
+                    options: nil
+                  }
+
         ConCache.put(:neo4j_sips_cache, :conn, conn)
         {:ok, conn}
       {:error, message} -> {:error, message}
@@ -43,7 +47,7 @@ defmodule Neo4j.Sips.Connection do
       {:get, url, _} ->
           case HTTP.get(url) do
             {:ok, %HTTPoison.Response{body: body, headers: headers, status_code: 200}} ->
-                Poison.decode!(body)
+                Poison.decode!(body, keys: :atoms)
             {:error, %HTTPoison.Error{id: id, reason: reason}} -> {:error, reason}
             {:ok, _} -> []
           end
