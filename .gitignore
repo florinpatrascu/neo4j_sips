@@ -1,6 +1,11 @@
 ### Elixir template
 /_build
 /deps
+/doc
+/bench/snapshots
+/bench/graphs
+/cover
+
 erl_crash.dump
 *.ez
 
