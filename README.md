@@ -1,7 +1,7 @@
 Neo4j.Sips
 ==========
 
-A simple Elixir wrapper around the Neo4j graph database REST API. It is aiming to help the Elixir developers explore [Neo4j](http://neo4j.com/developer/get-started/), and to eventually become the core of a future [Ecto](https://github.com/elixir-lang/ecto) adapter.
+A simple Elixir wrapper around the [Neo4j](http://neo4j.com/developer/get-started/) graph database REST API.
 
 ### Install
 
@@ -76,5 +76,5 @@ With a minimalist setup configured as above, and a Neo4j server running, we can 
 For more examples, see the test suites.
 
 ## License
-* Neo4jSips - MIT, check LICENSE file for more information.
+* Neo4j.Sips - MIT, check LICENSE file for more information.
 * Neo4j - Dual free software/commercial license, see http://neo4j.org/
