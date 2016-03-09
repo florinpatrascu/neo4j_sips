@@ -5,19 +5,19 @@ A simple Elixir wrapper around the [Neo4j](http://neo4j.com/developer/get-starte
 
 ### Install
 
-Edit mix.ex and add the `neo4j_sips` dependency to the `deps/1 `function:
+From [hex.pm](https://hex.pm/packages/neo4j_sips). Edit the `mix.ex` file and add the `neo4j_sips` dependency to the `deps/1 `function:
 
     defp deps do
       [{:neo4j_sips, "~> 0.1"}]
     end
 
-or Github:
+or from Github:
 
     defp deps do
       [{:neo4j_sips, github: "florinpatrascu/neo4j_sips"}]
     end
 
-Or, if you're using a local development copy:
+If you're using a local development copy:
 
     defp deps do
       [{:neo4j_sips, path: "../neo4j_sips"}]
@@ -54,9 +54,10 @@ With a minimalist setup configured as above, and a Neo4j server running, we can 
 
     $ cd <my_mix_project>
     $ iex -S mix
-    Erlang/OTP 18 [erts-7.1] [source] [64-bit] ....
+    Erlang/OTP 18 [erts-7.2.1] [source] [64-bit] ...
 
-    Interactive Elixir (1.1.1) - press Ctrl+C to exit ....
+
+    Interactive Elixir (1.2.3) - press Ctrl+C to exit (type h() ENTER for help)
     iex(1)> alias Neo4j.Sips, as: Neo4j
 
     iex(2)> cypher = """
@@ -76,5 +77,5 @@ With a minimalist setup configured as above, and a Neo4j server running, we can 
 For more examples, see the test suites.
 
 ## License
-* Neo4j.Sips - MIT, check LICENSE file for more information.
+* Neo4j.Sips - MIT, check [LICENSE](LICENSE) file for more information.
 * Neo4j - Dual free software/commercial license, see http://neo4j.org/
