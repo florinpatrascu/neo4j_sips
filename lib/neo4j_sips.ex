@@ -183,10 +183,10 @@ defmodule Neo4j.Sips do
   def config, do: Application.get_env(:neo4j_sips, Neo4j)
 
   @doc false
-  def config(key), do: Dict.get(config, key)
+  def config(key), do: Keyword.get(config, key)
 
   @doc false
-  def config(key, default), do: Dict.get(config, key, default)
+  def config(key, default), do: Keyword.get(config, key, default)
 
   @doc false
   def pool_name, do: @pool_name
