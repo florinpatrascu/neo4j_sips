@@ -21,7 +21,7 @@ defmodule Neo4j.Sips.Response do
     else
       # 1. IO.inspect(options |> Enum.map &({String.to_atom(&1), format_response(sip["results"], &1)}))
       # 2. IO.inspect(Enum.map(options, fn opt -> {String.to_atom(opt), format_response(sip["results"], opt)} end))
-      {:ok, options |> Enum.map(&{String.to_atom(&1), get_row_or_graph(sip, &1)}) }
+      {:ok, options |> Enum.map(&{String.to_atom(&1), get_row_or_graph(sip, &1)})}
     end
   end
 

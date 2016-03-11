@@ -58,10 +58,10 @@ defmodule Neo4j.Sips.Server do
       {:ok, _uri} ->
         # "ping" the server, and check if we can connect
         case HTTP.get("#{url}/db/data/") do
-          {:ok, %HTTPoison.Response{body: _body, headers: _headers, status_code: 400, }} ->
+          {:ok, %HTTPoison.Response{body: _body, headers: _headers, status_code: 400,}} ->
             {:error, "Cannot connect to the server at url: #{url}. Reason: Invalid Authorization"}
 
-          {:error, %HTTPoison.Error{reason: reason} } ->
+          {:error, %HTTPoison.Error{reason: reason}} ->
             {:error, "Cannot connect to the server at url: #{url}. Reason: #{reason}"}
 
           {:ok, response_db_data} ->

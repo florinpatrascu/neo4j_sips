@@ -32,7 +32,7 @@ defmodule Neo4j.Sips.Utils do
   use a collection for finding and extracting elements with a given name
   """
   def get_element(c, name) do
-    Enum.map(c, &(Map.get(&1, name))) |> List.first
+    List.first(Enum.map(c, &(Map.get(&1, name))))
   end
 
   # private stuff
@@ -57,7 +57,7 @@ defmodule Neo4j.Sips.Utils do
   defp neo4j_statement(query, params, options) do
     q = String.strip(query)
     if String.length(q) > 0 do
-      statement = %{ statement: q}
+      statement = %{statement: q}
       if Map.size(params) > 0 do
         statement = Map.merge(statement, %{parameters: params})
       end
@@ -71,8 +71,7 @@ defmodule Neo4j.Sips.Utils do
   end
 
   defp to_json(value, options \\ []) do
-    Poison.encode!(value, options)
-    |> IO.iodata_to_binary
+    IO.iodata_to_binary(Poison.encode!(value, options))
   end
 
 end

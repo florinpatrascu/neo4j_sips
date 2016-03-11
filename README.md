@@ -56,7 +56,6 @@ With a minimalist setup configured as above, and a Neo4j server running, we can 
     $ iex -S mix
     Erlang/OTP 18 [erts-7.2.1] [source] [64-bit] ...
 
-
     Interactive Elixir (1.2.3) - press Ctrl+C to exit (type h() ENTER for help)
     iex(1)> alias Neo4j.Sips, as: Neo4j
 
@@ -71,10 +70,21 @@ With a minimalist setup configured as above, and a Neo4j server running, we can 
     iex(4)> n = Neo4j.query!(Neo4j.conn, "match (n:Neo4jSips {title:'Elixir sipping from Neo4j'}) where n.neo4j_sips_test return n")
     [%{"n" => %{"license" => "MIT", "neo4j_sips_test" => true, "released" => 2015,
          "title" => "Elixir sipping from Neo4j"}}]
-    iex(5)> 
+  
     
-
 For more examples, see the test suites.
+
+### Contributing
+
+- [Fork it](https://github.com/florinpatrascu/neo4j_sips/fork)
+- Create your feature branch (`git checkout -b my-new-feature`)
+- Test (`mix test`)
+- Commit your changes (`git commit -am 'Add some feature'`)
+- Push to the branch (`git push origin my-new-feature`)
+- Create new Pull Request
+
+### Author
+Florin T.PATRASCU (@florinpatrascu)
 
 ## License
 * Neo4j.Sips - MIT, check [LICENSE](LICENSE) file for more information.

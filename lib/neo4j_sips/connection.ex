@@ -1,4 +1,13 @@
 defmodule Neo4j.Sips.Connection do
+  @moduledoc """
+  The Connection module.
+
+  This module defines a `Neo4j.Sips.Connection` structure containing important
+  server details. For efficiency, and because we need an initial dialog with the
+  server for finding the REST API endpoints, the server details are cached and reused.
+
+  """
+
   defstruct [:server, :transaction_url, :server_version, :commit_url, :options]
 
   use GenServer
@@ -25,7 +34,7 @@ defmodule Neo4j.Sips.Connection do
   def init(opts) do
     case Server.init opts do
       {:ok, server} ->
-        conn = %Neo4j.Sips.Connection{
+        connection = %Neo4j.Sips.Connection{
                     server: server,
                     transaction_url: server.data.transaction,
                     server_version: server.data.neo4j_version,
@@ -33,7 +42,7 @@ defmodule Neo4j.Sips.Connection do
                     options: nil
                   }
 
-        ConCache.put(:neo4j_sips_cache, :conn, conn)
+        ConCache.put(:neo4j_sips_cache, :conn, connection)
         {:ok, conn}
       {:error, message} -> {:error, message}
     end
@@ -57,13 +66,13 @@ defmodule Neo4j.Sips.Connection do
   end
 
   @doc false
-  def send(method, conn, body \\ "") do
-    pool_server(method, conn, body)
+  def send(method, connection, body \\ "") do
+    pool_server(method, connection, body)
   end
 
-  defp pool_server(method, conn, body) do
+  defp pool_server(method, connection, body) do
     :poolboy.transaction(
-      Neo4j.Sips.pool_name, &(:gen_server.call(&1, {method, conn, body})),
+      Neo4j.Sips.pool_name, &(:gen_server.call(&1, {method, connection, body})),
       Neo4j.Sips.config(:timeout)
     )
   end
