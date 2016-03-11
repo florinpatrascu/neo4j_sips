@@ -1,9 +1,11 @@
 defmodule Neo4j.Sips do
   @moduledoc """
+  Elixir driver for Neo4j
 
-  A module that provides a simple Interface to communicate with a
-  Neo4j server via REST. All functions take a pool to run the query on.
+  A module that provides a simple Interface to communicate with a Neo4j server via http,
+  using [Neo4j's own REST API](http://neo4j.com/docs/stable/rest-api.html).
 
+  All functions take a pool to run the query on.
   """
 
   alias Neo4j.Sips.Transaction

@@ -1,4 +1,13 @@
 defmodule Neo4j.Sips.Connection do
+  @moduledoc """
+  The Connection module.
+
+  This module defines a `Neo4j.Sips.Connection` structure containing important
+  server details. For efficiency, and because we need an initial dialog with the
+  server for finding the REST API endpoints, the server details are cached and reused.
+
+  """
+
   defstruct [:server, :transaction_url, :server_version, :commit_url, :options]
 
   use GenServer
