@@ -14,7 +14,6 @@ defmodule Neo4j.Sips.Connection do
 
   import Kernel, except: [send: 2]
 
-  alias Neo4j.Sips.Server
   alias Neo4j.Sips.Http, as: HTTP
 
   require Logger
@@ -24,26 +23,19 @@ defmodule Neo4j.Sips.Connection do
   options
   """
   @spec start_link(Keyword.t) :: GenServer.on_start
-  def start_link(params) do
-    # IO.puts("#{inspect(__MODULE__)}:start_link " <> inspect(params))
-    GenServer.start_link(__MODULE__, params, [])
+  def start_link(server_endpoint) do
+    # IO.puts("#{inspect(__MODULE__)}:start_link " <> inspect(server_endpoint))
+    GenServer.start_link(__MODULE__, server_endpoint, [])
   end
 
   ## Server callbacks
   @doc false
   def init(opts) do
-    case Server.init opts do
-      {:ok, server} ->
-        connection = %Neo4j.Sips.Connection{
-                    server: server,
-                    transaction_url: server.data.transaction,
-                    server_version: server.data.neo4j_version,
-                    commit_url: "",
-                    options: nil
-                  }
-
+    case opts do
+      {:ok, connection} ->
         ConCache.put(:neo4j_sips_cache, :conn, connection)
-        {:ok, conn}
+        {:ok, connection}
+
       {:error, message} -> {:error, message}
     end
   end
@@ -55,8 +47,8 @@ defmodule Neo4j.Sips.Connection do
       {:delete, url, _}  -> decode_as_response(HTTP.delete!(url).body)
       {:get, url, _} ->
           case HTTP.get(url) do
-            {:ok, %HTTPoison.Response{body: body, headers: headers, status_code: 200}} -> Poison.decode!(body)
-            {:error, %HTTPoison.Error{id: id, reason: reason}} -> {:error, reason}
+            {:ok, %HTTPoison.Response{body: body, headers: _headers, status_code: 200}} -> Poison.decode!(body)
+            {:error, %HTTPoison.Error{id: _id, reason: reason}} -> {:error, reason}
             {:ok, _} -> []
           end
     end

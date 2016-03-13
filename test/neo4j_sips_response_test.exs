@@ -1,18 +1,8 @@
 defmodule Neo4j.Sips.Response.Test do
   use ExUnit.Case, async: true
 
-  @db_url Neo4j.Sips.config(:url)
-
   alias Neo4j.Sips.Response
   alias Neo4j.Sips.TestHelper
-  alias Neo4j.Sips.Connection
-
-  setup_all do
-    case Connection.start_link(url: @db_url, timeout: 60) do
-      {:ok, pid}      -> {:ok, %{pid: pid}}
-      {:error, message} -> Mix.raise message
-    end
-  end
 
   test "loading a supported error response structure" do
     path = "./test/fixtures/error_response.json"
