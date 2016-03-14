@@ -10,6 +10,7 @@ defmodule Neo4j.Sips do
 
   alias Neo4j.Sips.Transaction
   alias Neo4j.Sips.Connection
+  alias Neo4j.Sips.Server
   alias Neo4j.Sips.Query
 
   @config Application.get_env(:neo4j_sips, Neo4j)
@@ -30,8 +31,22 @@ defmodule Neo4j.Sips do
       max_overflow: config(:max_overflow, 0)
     ]
 
+    conn = case Server.init(config) do
+      {:ok, server} ->
+        connection = %Neo4j.Sips.Connection{
+                    server: server,
+                    transaction_url: server.data.transaction,
+                    server_version: server.data.neo4j_version,
+                    commit_url: "",
+                    options: nil
+                  }
+
+        {:ok, connection}
+      {:error, message} -> {:error, message}
+    end
+
     children = [
-      :poolboy.child_spec(@pool_name, poolboy_config, config)
+      :poolboy.child_spec(@pool_name, poolboy_config, conn)
     ]
 
     opts = [strategy: :one_for_one, name: Neo4j.Supervisor]
