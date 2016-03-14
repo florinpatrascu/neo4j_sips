@@ -31,22 +31,21 @@ defmodule Neo4j.Sips do
       max_overflow: config(:max_overflow, 0)
     ]
 
-    conn = case Server.init(config) do
+    case Server.init(config) do
       {:ok, server} ->
-        connection = %Neo4j.Sips.Connection{
+        ConCache.put(:neo4j_sips_cache, :conn, %Neo4j.Sips.Connection{
                     server: server,
                     transaction_url: server.data.transaction,
                     server_version: server.data.neo4j_version,
                     commit_url: "",
                     options: nil
-                  }
+                  })
 
-        {:ok, connection}
-      {:error, message} -> {:error, message}
+      {:error, message} -> Mix.raise message
     end
 
     children = [
-      :poolboy.child_spec(@pool_name, poolboy_config, conn)
+      :poolboy.child_spec(@pool_name, poolboy_config, :ok)
     ]
 
     opts = [strategy: :one_for_one, name: Neo4j.Supervisor]

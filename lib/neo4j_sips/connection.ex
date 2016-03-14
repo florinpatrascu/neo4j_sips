@@ -24,20 +24,7 @@ defmodule Neo4j.Sips.Connection do
   """
   @spec start_link(Keyword.t) :: GenServer.on_start
   def start_link(server_endpoint) do
-    # IO.puts("#{inspect(__MODULE__)}:start_link " <> inspect(server_endpoint))
     GenServer.start_link(__MODULE__, server_endpoint, [])
-  end
-
-  ## Server callbacks
-  @doc false
-  def init(opts) do
-    case opts do
-      {:ok, connection} ->
-        ConCache.put(:neo4j_sips_cache, :conn, connection)
-        {:ok, connection}
-
-      {:error, message} -> {:error, message}
-    end
   end
 
   @doc false
