@@ -25,7 +25,7 @@ defmodule Neo4jSips.Mixfile do
   #
   # Type `mix help compile.app` for more information
   def application do
-    [applications: [:logger, :httpoison, :poison, :con_cache],
+    [applications: [:logger, :httpoison, :poison, :con_cache, :poolboy],
      mod: {Neo4j.Sips, []}]
   end
 
