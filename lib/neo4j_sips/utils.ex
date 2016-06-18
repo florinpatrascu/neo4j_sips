@@ -37,6 +37,8 @@ defmodule Neo4j.Sips.Utils do
 
   # private stuff
 
+  defp make_neo4j_statements([], acc, _options) when acc == [nil], do: ""
+
   defp make_neo4j_statements([], acc, _options) do
     to_json(%{statements: Enum.reverse(acc)})
   end

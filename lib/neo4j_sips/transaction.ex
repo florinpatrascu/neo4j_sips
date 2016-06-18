@@ -75,7 +75,7 @@ defmodule Neo4j.Sips.Transaction do
   def tx_commit(conn, statements) when is_list(statements) do
     commit_url = conn.transaction_url <> @commit
     if String.length(conn.commit_url) > 0 do
-      commit_url = conn.commit_url
+      commit_url = conn.commit_url <> @commit
     end
     Connection.send(:post, commit_url, Utils.neo4j_statements(statements, conn.options))
   end
@@ -87,7 +87,7 @@ defmodule Neo4j.Sips.Transaction do
   def tx_commit(conn, statement, params \\ %{}) do
     commit_url = conn.transaction_url <> @commit
     if String.length(conn.commit_url) > 0 do
-      commit_url = conn.commit_url
+      commit_url = conn.commit_url <> @commit
     end
     Connection.send(:post, commit_url, Utils.neo4j_statements([{statement, params}], conn.options))
   end

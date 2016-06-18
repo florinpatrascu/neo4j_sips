@@ -2,12 +2,14 @@ defmodule Neo4j.Sips.Query do
   @moduledoc ~S"""
   Provides the Query DSL.
   """
-
-  alias Neo4j.Sips.Transaction
+  alias Neo4j.Sips.Connection
   alias Neo4j.Sips.Response
+  alias Neo4j.Sips.Utils
+
+  @commit "/commit"
 
   def query(conn, statement) do
-    {:ok, response} = Transaction.tx_commit(conn, statement)
+    {:ok, response} = query_commit(conn, statement)
 
     options = nil
     if conn.options && Map.has_key?(conn.options, :resultDataContents) do
@@ -25,7 +27,7 @@ defmodule Neo4j.Sips.Query do
   end
 
   def query(conn, statement, params) when is_map(params) do
-    {:ok, response} = Transaction.tx_commit(conn, statement, params)
+    {:ok, response} = query_commit(conn, statement, params)
 
     options = nil
     if conn.options && Map.has_key?(conn.options, :resultDataContents) do
@@ -52,4 +54,27 @@ defmodule Neo4j.Sips.Query do
     end
   end
 
+  defp query_commit(conn, statements) when is_list(statements) do
+    commit_url = conn.transaction_url <> @commit
+    if String.length(conn.commit_url) > 0 do
+      commit_url = conn.commit_url
+    end
+    Connection.send(:post, commit_url, Utils.neo4j_statements(statements, conn.options))
+  end
+
+  defp query_commit(conn, statement, params \\ %{}) do
+    commit_url = conn.transaction_url <> @commit
+    if String.length(conn.commit_url) > 0 do
+      commit_url = conn.commit_url
+    end
+    Connection.send(:post, commit_url, Utils.neo4j_statements([{statement, params}], conn.options))
+  end
+
+  defp query_commit!(conn, query, params \\ %{}) do
+    case query_commit(conn, query, params) do
+      {:error, reason} -> raise Neo4j.Sips.Error, code: reason["code"],
+        message: reason["message"]
+      {:ok, response} -> response
+    end
+  end
 end
