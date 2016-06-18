@@ -54,20 +54,20 @@ defmodule Neo4j.Sips.Query do
     end
   end
 
+
+  @doc """
+    This is different than Transaction's same function, since we only commit if there are no open transactions
+  """
+  defp commit_url(conn) do
+    if( String.length(conn.commit_url) > 0, do: conn.commit_url, else: conn.transaction_url <> @commit)
+  end
+
   defp query_commit(conn, statements) when is_list(statements) do
-    commit_url = conn.transaction_url <> @commit
-    if String.length(conn.commit_url) > 0 do
-      commit_url = conn.commit_url
-    end
-    Connection.send(:post, commit_url, Utils.neo4j_statements(statements, conn.options))
+    Connection.send(:post, commit_url(conn), Utils.neo4j_statements(statements, conn.options))
   end
 
   defp query_commit(conn, statement, params \\ %{}) do
-    commit_url = conn.transaction_url <> @commit
-    if String.length(conn.commit_url) > 0 do
-      commit_url = conn.commit_url
-    end
-    Connection.send(:post, commit_url, Utils.neo4j_statements([{statement, params}], conn.options))
+    Connection.send(:post, commit_url(conn), Utils.neo4j_statements([{statement, params}], conn.options))
   end
 
   defp query_commit!(conn, query, params \\ %{}) do

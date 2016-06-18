@@ -73,11 +73,7 @@ defmodule Neo4j.Sips.Transaction do
   """
   @spec tx_commit(Neo4j.Sips.Connection, String.t) :: Neo4j.Sips.Response
   def tx_commit(conn, statements) when is_list(statements) do
-    commit_url = conn.transaction_url <> @commit
-    if String.length(conn.commit_url) > 0 do
-      commit_url = conn.commit_url <> @commit
-    end
-    Connection.send(:post, commit_url, Utils.neo4j_statements(statements, conn.options))
+    Connection.send(:post, commit_url(conn), Utils.neo4j_statements(statements, conn.options))
   end
 
   @doc """
@@ -85,11 +81,7 @@ defmodule Neo4j.Sips.Transaction do
   """
   @spec tx_commit(Neo4j.Sips.Connection, String.t, Map.t) :: Neo4j.Sips.Response
   def tx_commit(conn, statement, params \\ %{}) do
-    commit_url = conn.transaction_url <> @commit
-    if String.length(conn.commit_url) > 0 do
-      commit_url = conn.commit_url <> @commit
-    end
-    Connection.send(:post, commit_url, Utils.neo4j_statements([{statement, params}], conn.options))
+    Connection.send(:post, commit_url(conn), Utils.neo4j_statements([{statement, params}], conn.options))
   end
 
   @doc """
@@ -103,4 +95,12 @@ defmodule Neo4j.Sips.Transaction do
       {:ok, response} -> response
     end
   end
+
+  @doc """
+    This is different than Query's same function, since we always commit, on tx_commit/...
+  """
+  defp commit_url(conn) do
+    if( String.length(conn.commit_url) > 0, do: conn.commit_url, else: conn.transaction_url) <> @commit
+  end
+
 end
