@@ -99,7 +99,7 @@ defmodule Neo4j.Sips.Transaction do
   @doc """
     This is different than Query's same function, since we always commit, on tx_commit/...
   """
-  defp commit_url(conn) do
+  def commit_url(conn) do
     if( String.length(conn.commit_url) > 0, do: conn.commit_url, else: conn.transaction_url) <> @commit
   end
 
