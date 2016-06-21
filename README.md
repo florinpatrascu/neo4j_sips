@@ -83,6 +83,9 @@ For more examples, see the test suites.
 - Push to the branch (`git push origin my-new-feature`)
 - Create new Pull Request
 
+### Contributors
+...Paul (@dotdotdotpaul)
+
 ### Author
 Florin T.PATRASCU (@florinpatrascu)
 
