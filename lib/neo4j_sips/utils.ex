@@ -59,18 +59,17 @@ defmodule Neo4j.Sips.Utils do
   defp neo4j_statement(query, params, options) do
     q = String.strip(query)
     if String.length(q) > 0 do
-      statement = %{statement: q}
-      if Map.size(params) > 0 do
-        statement = Map.merge(statement, %{parameters: params})
-      end
-
-      if options do
-        statement = Map.merge(statement, options)
-      end
-
-      statement
+      %{statement: q}
+      |> merge_params(params)
+      |> merge_options(options)
     end
   end
+  defp merge_params(statement, params) when map_size(params)> 0 do
+    Map.merge(statement, %{parameters: params})
+  end
+  defp merge_params(statement, _), do: statement
+  defp merge_options(statement, opts) when is_nil(opts), do: statement
+  defp merge_options(statement, opts), do: Map.merge(statement, opts)
 
   defp to_json(value, options \\ []) do
     IO.iodata_to_binary(Poison.encode!(value, options))

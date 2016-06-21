@@ -6,20 +6,21 @@ defmodule Neo4j.Sips.Http do
   """
   use HTTPoison.Base
 
-  token_auth = nil
-
-  if basic_auth = Neo4j.Sips.config[:basic_auth] do
-    username = basic_auth[:username]
-    password = basic_auth[:password]
-    token_auth = Base.encode64("#{username}:#{password}")
-  end
-
-  if Neo4j.Sips.config[:token_auth] != nil do
-    token_auth = Neo4j.Sips.config[:token_auth]
-    def auth_token, do: unquote(Macro.escape(token_auth))
-  else
-    def auth_token, do: nil
-  end
+  token_auth =
+    if Neo4j.Sips.config[:token_auth] != nil do
+      token_auth = Neo4j.Sips.config[:token_auth]
+      def auth_token, do: unquote(Macro.escape(token_auth))
+      token_auth
+    else
+      def auth_token, do: nil
+      if basic_auth = Neo4j.Sips.config[:basic_auth] do
+        username = basic_auth[:username]
+        password = basic_auth[:password]
+        Base.encode64("#{username}:#{password}")
+      else
+        nil
+      end
+    end
 
   @headers [
     "Accept": "application/json; charset=UTF-8",
