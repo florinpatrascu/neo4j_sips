@@ -7,12 +7,11 @@ defmodule Neo4jSips.Mixfile do
     [app: :neo4j_sips,
      version: @version,
      elixir: "~> 1.2",
-     deps: deps,
-     package: package,
+     deps: deps(),
+     package: package(),
      description: "A very simple and versatile Neo4J Elixir driver",
      name: "Neo4j.Sips",
 
-     # http://blog.plataformatec.com.br/2015/04/build-embedded-and-start-permanent-in-elixir-1-0-4/
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
 
