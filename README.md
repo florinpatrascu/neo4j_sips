@@ -1,4 +1,4 @@
-Neo4j.Sips
+Neo4j.Sips [![Deps Status](https://beta.hexfaktor.org/badge/all/github/florinpatrascu/neo4j_sips.svg)](https://beta.hexfaktor.org/github/florinpatrascu/neo4j_sips)
 ==========
 
 A simple Elixir wrapper around the [Neo4j](http://neo4j.com/developer/get-started/) graph database REST API.
