@@ -4,7 +4,7 @@ defmodule Neo4j.Sips.Utils do
   @doc """
   Generate a random string.
   """
-  def random_id, do: :random.uniform |> Float.to_string |> String.slice(2..10)
+  def random_id, do: :rand.uniform |> Float.to_string |> String.slice(2..10)
 
   @doc """
   Given a list of queries i.e. `[{"cypher statement ..."}, %{parameters...}]`, this
