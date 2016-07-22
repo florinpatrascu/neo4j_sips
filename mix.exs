@@ -1,7 +1,7 @@
 defmodule Neo4jSips.Mixfile do
   use Mix.Project
 
-  @version "0.1.32"
+  @version "0.2.04"
 
   def project do
     [app: :neo4j_sips,
@@ -25,7 +25,7 @@ defmodule Neo4jSips.Mixfile do
   # Type `mix help compile.app` for more information
   def application do
     [applications: [:logger, :httpoison, :poison, :con_cache, :poolboy],
-     mod: {Neo4j.Sips, []}]
+     mod: {Neo4j.Sips.Application, []}]
   end
 
   defp deps do
@@ -35,8 +35,8 @@ defmodule Neo4jSips.Mixfile do
      {:poolboy, "~> 1.5"},
      {:mix_test_watch, "~> 0.2", only: [:dev, :test]},
      {:credo, "~> 0.4", only: [:dev, :test]},
-     {:ex_doc, "~> 0.12", only: :docs},
-     {:earmark, "~> 0.2", only: :docs},
+     {:ex_doc, "~> 0.13", only: :docs},
+     {:earmark, "~> 1.0", only: :docs},
      {:inch_ex, "~> 0.5", only: :docs}]
   end
 

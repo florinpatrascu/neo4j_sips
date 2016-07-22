@@ -31,4 +31,6 @@ end
 # OPTIONAL MATCH (n)-[r]-()
 # DELETE n,r
 
+{:ok, _pid} = Neo4j.Sips.start_link(Application.get_env(:neo4j_sips, Neo4j))
+
 Process.flag(:trap_exit, true)

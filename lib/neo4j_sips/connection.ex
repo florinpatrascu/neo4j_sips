@@ -18,11 +18,12 @@ defmodule Neo4j.Sips.Connection do
 
   require Logger
 
+  @pool_tx_timeout  30
+
   @doc """
   Starts the connection process. Please check the config files for the connection
   options
   """
-  @spec start_link(Keyword.t) :: GenServer.on_start
   def start_link(server_endpoint) do
     GenServer.start_link(__MODULE__, server_endpoint, [])
   end
@@ -50,9 +51,9 @@ defmodule Neo4j.Sips.Connection do
   end
 
   defp pool_server(method, connection, body) do
+    # todo: find a replacement for: Neo4j.Sips.config(:timeout)
     :poolboy.transaction(
-      Neo4j.Sips.pool_name, &(:gen_server.call(&1, {method, connection, body})),
-      Neo4j.Sips.config(:timeout)
+      Neo4j.Sips.pool_name, &(:gen_server.call(&1, {method, connection, body})), @pool_tx_timeout
     )
   end
 

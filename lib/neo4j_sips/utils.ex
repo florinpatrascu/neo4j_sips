@@ -6,6 +6,20 @@ defmodule Neo4j.Sips.Utils do
   """
   def random_id, do: :rand.uniform |> Float.to_string |> String.slice(2..10)
 
+
+  @doc """
+  Fills in the given `opts` with default options.
+  """
+  @spec default_config(Keyword.t) :: Keyword.t
+  def default_config(config \\ Application.get_env(:neo4j_sips, Neo4j)) do
+    config
+    |> Keyword.put_new(:url, System.get_env("NEO4J_URL") || "http://localhost:7474")
+    |> Keyword.put_new(:pool_size, 1)
+    |> Keyword.put_new(:max_overflow, 0)
+    |> Keyword.put_new(:timeout, 30)
+    |> Enum.reject(fn {_k, v} -> is_nil(v) end)
+  end
+
   @doc """
   Given a list of queries i.e. `[{"cypher statement ..."}, %{parameters...}]`, this
   method will return a JSON that may look like this:

@@ -2,8 +2,7 @@ defmodule Neo4j.Sips.Server.Test do
   use ExUnit.Case, async: true
 
   alias Neo4j.Sips.Server
-  @db_url Neo4j.Sips.config(:url)
-
+  @db_url Neo4j.Sips.Utils.default_config()[:url]
 
   setup_all do
     case Server.init(url: @db_url, timeout: 60) do

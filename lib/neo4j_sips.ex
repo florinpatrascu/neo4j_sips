@@ -12,23 +12,22 @@ defmodule Neo4j.Sips do
   alias Neo4j.Sips.Connection
   alias Neo4j.Sips.Server
   alias Neo4j.Sips.Query
+  alias Neo4j.Sips.Utils
 
-  @config Application.get_env(:neo4j_sips, Neo4j)
   @pool_name :neo4j_sips_pool
 
-  if !@config, do: raise "Neo4j.Sips is not configured"
-  if !Dict.get(@config, :url), do: raise "Neo4j.Sips requires the :url of the database"
-
   @doc false
-  def start(_type, _args) do
-    import Supervisor.Spec, warn: false
+  def start_link(config) do
+    config = Utils.default_config(config)
+    if !Dict.get(config, :url), do: raise "Neo4j.Sips requires the :url of the database"
+
     ConCache.start_link([], name: :neo4j_sips_cache)
 
     poolboy_config = [
       name: {:local, @pool_name},
       worker_module: Neo4j.Sips.Connection,
-      size: config(:pool_size, 1),
-      max_overflow: config(:max_overflow, 0)
+      size: Keyword.get(config, :pool_size),
+      max_overflow: Keyword.get(config, :max_overflow)
     ]
 
     case Server.init(config) do
@@ -45,11 +44,15 @@ defmodule Neo4j.Sips do
     end
 
     children = [
-      :poolboy.child_spec(@pool_name, poolboy_config, :ok)
+      :poolboy.child_spec(@pool_name, poolboy_config, config)
     ]
 
-    opts = [strategy: :one_for_one, name: Neo4j.Supervisor]
-    Supervisor.start_link(children, opts)
+    options = [
+      strategy: :one_for_one,
+      name: __MODULE__
+    ]
+
+    Supervisor.start_link(children, options)
   end
 
   ## Connection
