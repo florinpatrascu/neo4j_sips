@@ -22,6 +22,36 @@ defmodule Neo4j.Sips do
     if !Dict.get(config, :url), do: raise "Neo4j.Sips requires the :url of the database"
 
     ConCache.start_link([], name: :neo4j_sips_cache)
+    ConCache.put(:neo4j_sips_cache, :config, config)
+
+    headers = [
+      "Accept": "application/json; charset=UTF-8",
+      "Content-Type": "application/json; charset=UTF-8",
+      "User-Agent": "Neo4j.Sips client",
+      "X-Stream": "true"
+    ]
+
+    token_auth =
+      if config[:token_auth] != nil do
+        Macro.escape(config[:token_auth])
+      else
+        if basic_auth = config[:basic_auth] do
+          username = basic_auth[:username]
+          password = basic_auth[:password]
+          Base.encode64("#{username}:#{password}")
+        else
+          nil
+        end
+      end
+
+    if token_auth != nil do
+      ConCache.put(:neo4j_sips_cache, :http_headers,
+        headers ++ ["Authorization": "Basic #{token_auth}"])
+    else
+      ConCache.put(:neo4j_sips_cache, :http_headers, headers)
+    end
+
+
 
     poolboy_config = [
       name: {:local, @pool_name},
@@ -197,7 +227,7 @@ defmodule Neo4j.Sips do
         token_auth: "bmVvNGo6dGVzdA=="
 
   """
-  def config, do: Application.get_env(:neo4j_sips, Neo4j)
+  def config, do: ConCache.get(:neo4j_sips_cache, :config)
 
   @doc false
   def config(key), do: Keyword.get(config, key)

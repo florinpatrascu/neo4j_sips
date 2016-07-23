@@ -6,7 +6,7 @@ defmodule Neo4jSips.Mixfile do
   def project do
     [app: :neo4j_sips,
      version: @version,
-     elixir: "~> 1.2",
+     elixir: "~> 1.3",
      deps: deps(),
      package: package(),
      description: "A very simple and versatile Neo4J Elixir driver",
