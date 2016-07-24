@@ -7,6 +7,7 @@ defmodule Neo4j.Sips do
 
   All functions take a pool to run the query on.
   """
+  use Supervisor
 
   alias Neo4j.Sips.Transaction
   alias Neo4j.Sips.Connection
@@ -51,8 +52,6 @@ defmodule Neo4j.Sips do
       ConCache.put(:neo4j_sips_cache, :http_headers, headers)
     end
 
-
-
     poolboy_config = [
       name: {:local, @pool_name},
       worker_module: Neo4j.Sips.Connection,
@@ -83,6 +82,11 @@ defmodule Neo4j.Sips do
     ]
 
     Supervisor.start_link(children, options)
+  end
+
+  @doc false
+  def child_spec(opts) do
+    Supervisor.Spec.worker(__MODULE__, [opts])
   end
 
   ## Connection
