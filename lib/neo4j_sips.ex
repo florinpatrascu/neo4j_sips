@@ -242,4 +242,8 @@ defmodule Neo4j.Sips do
   @doc false
   def pool_name, do: @pool_name
 
+  @doc false
+  def init(args) do
+    {:ok, args}
+  end
 end
