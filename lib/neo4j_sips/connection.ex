@@ -5,7 +5,6 @@ defmodule Neo4j.Sips.Connection do
   This module defines a `Neo4j.Sips.Connection` structure containing important
   server details. For efficiency, and because we need an initial dialog with the
   server for finding the REST API endpoints, the server details are cached and reused.
-
   """
 
   defstruct [:server, :transaction_url, :server_version, :commit_url, :options]
@@ -18,7 +17,9 @@ defmodule Neo4j.Sips.Connection do
 
   require Logger
 
-  @pool_tx_timeout  30
+  @post "POST - "
+  @delete "DELETE - "
+  @get "GET - "
 
   @doc """
   Starts the connection process. Please check the config files for the connection
@@ -31,14 +32,21 @@ defmodule Neo4j.Sips.Connection do
   @doc false
   def handle_call(data, _from, state) do
     result = case data do
-      {:post, url, body} -> decode_as_response(HTTP.post!(url, body).body)
-      {:delete, url, _}  -> decode_as_response(HTTP.delete!(url).body)
+      {:post, url, body} ->
+        log(@post <> "#{url} - #{body}")
+        decode_as_response(HTTP.post!(url, body).body)
+
+      {:delete, url, _}  ->
+        log(@delete <> "#{url}")
+        decode_as_response(HTTP.delete!(url).body)
+
       {:get, url, _} ->
-          case HTTP.get(url) do
-            {:ok, %HTTPoison.Response{body: body, headers: _headers, status_code: 200}} -> Poison.decode!(body)
-            {:error, %HTTPoison.Error{id: _id, reason: reason}} -> {:error, reason}
-            {:ok, _} -> []
-          end
+        log(@get <> "#{url}")
+        case HTTP.get(url) do
+          {:ok, %HTTPoison.Response{body: body, headers: _headers, status_code: 200}} -> Poison.decode!(body)
+          {:error, %HTTPoison.Error{id: _id, reason: reason}} -> {:error, reason}
+          {:ok, _} -> []
+        end
     end
     # :random.seed(:os.timestamp)
     # timeout = state[:timeout] || 5000
@@ -51,9 +59,9 @@ defmodule Neo4j.Sips.Connection do
   end
 
   defp pool_server(method, connection, body) do
-    # todo: find a replacement for: Neo4j.Sips.config(:timeout)
     :poolboy.transaction(
-      Neo4j.Sips.pool_name, &(:gen_server.call(&1, {method, connection, body})), @pool_tx_timeout
+      Neo4j.Sips.pool_name, &(:gen_server.call(&1, {method, connection, body})),
+      Neo4j.Sips.config(:timeout)
     )
   end
 
@@ -92,6 +100,16 @@ defmodule Neo4j.Sips.Connection do
   """
   def server_version() do
     conn.server_version
+  end
+
+  @doc """
+  Logs the given message in debug mode.
+
+  The logger call will be removed at compile time if `compile_time_purge_level`
+  is set to higher than :debug
+  """
+  def log(message) when is_binary(message) do
+    Logger.debug(message)
   end
 
   defp decode_as_response(resp) do
