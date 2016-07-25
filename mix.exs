@@ -1,12 +1,12 @@
 defmodule Neo4jSips.Mixfile do
   use Mix.Project
 
-  @version "0.2.04"
+  @version "0.2.10"
 
   def project do
     [app: :neo4j_sips,
      version: @version,
-     elixir: "~> 1.3",
+     elixir: "~> 1.2",
      deps: deps(),
      package: package(),
      description: "A very simple and versatile Neo4J Elixir driver",
@@ -15,7 +15,7 @@ defmodule Neo4jSips.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
 
-     docs: [extras: ["README.md"],
+     docs: [extras: ["README.md", "CHANGELOG.md"],
             source_ref: "v#{@version}",
             source_url: "https://github.com/florinpatrascu/neo4j_sips"]]
   end
