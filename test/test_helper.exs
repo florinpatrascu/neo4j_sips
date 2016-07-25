@@ -1,4 +1,4 @@
-Logger.configure(level: :info)
+# Logger.configure(level: :info)
 ExUnit.start()
 
 defmodule Neo4j.Sips.TestHelper do
@@ -26,9 +26,11 @@ defmodule Neo4j.Sips.TestHelper do
   defp file_error_description(reason), do: "due to #{reason}."
 end
 
-# todo: To clean up the test db, before running the tests
-# MATCH (n)
-# OPTIONAL MATCH (n)-[r]-()
-# DELETE n,r
+{:ok, _pid} = Neo4j.Sips.start_link(Application.get_env(:neo4j_sips, Neo4j))
+
+# I am using the test db for debugging and the line below will clear *everything*
+# Neo4j.Sips.query(Neo4j.Sips.conn, "MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE n,r")
+#
+# todo: The tests should the data they create.
 
 Process.flag(:trap_exit, true)

@@ -7,28 +7,51 @@ defmodule Neo4j.Sips do
 
   All functions take a pool to run the query on.
   """
+  use Supervisor
 
   alias Neo4j.Sips.Transaction
   alias Neo4j.Sips.Connection
   alias Neo4j.Sips.Server
   alias Neo4j.Sips.Query
+  alias Neo4j.Sips.Utils
 
-  @config Application.get_env(:neo4j_sips, Neo4j)
   @pool_name :neo4j_sips_pool
 
-  if !@config, do: raise "Neo4j.Sips is not configured"
-  if !Dict.get(@config, :url), do: raise "Neo4j.Sips requires the :url of the database"
+  @doc """
+  Example of valid configurations (i.e. defined in config/dev.exs):
 
-  @doc false
-  def start(_type, _args) do
-    import Supervisor.Spec, warn: false
+     # Neo4j server not requiring authentication
+     config :neo4j_sips, Neo4j,
+       url: "http://localhost:7474"
+
+     # Neo4j server with username and password authentication
+     config :neo4j_sips, Neo4j,
+       url: "http://localhost:7474",
+       pool_size: 5,
+       max_overflow: 2,
+       timeout: 30,
+       basic_auth: [username: "neo4j", password: "neo4j"]
+
+     # or using a token
+     config :neo4j_sips, Neo4j,
+       url: "http://localhost:7474",
+       pool_size: 10,
+       max_overflow: 5,
+       timeout: :infinity,
+       token_auth: "bmVvNGo6dGVzdA=="
+  """
+  def start_link(config) do
+    config = Utils.default_config(config)
+    if !Dict.get(config, :url), do: raise "Neo4j.Sips requires the :url of the database"
+
     ConCache.start_link([], name: :neo4j_sips_cache)
+    ConCache.put(:neo4j_sips_cache, :config, config)
 
     poolboy_config = [
       name: {:local, @pool_name},
       worker_module: Neo4j.Sips.Connection,
-      size: config(:pool_size, 1),
-      max_overflow: config(:max_overflow, 0)
+      size: Keyword.get(config, :pool_size),
+      max_overflow: Keyword.get(config, :max_overflow)
     ]
 
     case Server.init(config) do
@@ -44,12 +67,15 @@ defmodule Neo4j.Sips do
       {:error, message} -> Mix.raise message
     end
 
-    children = [
-      :poolboy.child_spec(@pool_name, poolboy_config, :ok)
-    ]
+    children = [:poolboy.child_spec(@pool_name, poolboy_config, config)]
+    options = [strategy: :one_for_one, name: __MODULE__]
 
-    opts = [strategy: :one_for_one, name: Neo4j.Supervisor]
-    Supervisor.start_link(children, opts)
+    Supervisor.start_link(children, options)
+  end
+
+  @doc false
+  def child_spec(opts) do
+    Supervisor.Spec.worker(__MODULE__, [opts])
   end
 
   ## Connection
@@ -170,31 +196,8 @@ defmodule Neo4j.Sips do
 
   @doc """
    returns an environment specific Neo4j.Sips configuration.
-
-   Example of valid configurations (i.e. defined in config/dev.exs):
-
-      # Neo4j server not requiring authentication
-      config :neo4j_sips, Neo4j,
-        url: "http://localhost:7474"
-
-      # Neo4j server with username and password authentication
-      config :neo4j_sips, Neo4j,
-        url: "http://localhost:7474",
-        pool_size: 5,
-        max_overflow: 2,
-        timeout: 30,
-        basic_auth: [username: "neo4j", password: "neo4j"]
-
-      # or using a token
-      config :neo4j_sips, Neo4j,
-        url: "http://localhost:7474",
-        pool_size: 10,
-        max_overflow: 5,
-        timeout: :infinity,
-        token_auth: "bmVvNGo6dGVzdA=="
-
   """
-  def config, do: Application.get_env(:neo4j_sips, Neo4j)
+  def config, do: ConCache.get(:neo4j_sips_cache, :config)
 
   @doc false
   def config(key), do: Keyword.get(config, key)
@@ -205,4 +208,8 @@ defmodule Neo4j.Sips do
   @doc false
   def pool_name, do: @pool_name
 
+  @doc false
+  def init(args) do
+    {:ok, args}
+  end
 end

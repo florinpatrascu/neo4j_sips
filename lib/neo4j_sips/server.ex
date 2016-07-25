@@ -20,12 +20,12 @@ defmodule Neo4j.Sips.Server do
         "node_labels" : "http://localhost:7474/db/data/labels",
         "neo4j_version" : "2.2.3"
       }
-
   """
 
   defstruct [:server_url, :management_url, :data_url, :data, :timeout]
 
   alias Neo4j.Sips.Http, as: HTTP
+
   require Logger
 
   defmodule ServerData do
@@ -47,12 +47,39 @@ defmodule Neo4j.Sips.Server do
     ]
   end
 
+  @headers [
+    "Accept": "application/json; charset=UTF-8",
+    "Content-Type": "application/json; charset=UTF-8",
+    "User-Agent": "Neo4j.Sips client",
+    "X-Stream": "true"
+  ]
+
   @doc """
   collect the server REST endpoints from the remote host
   """
   def init(opts \\ []) do
     {url, opts} = Keyword.pop(opts, :url, "")
-    {timeout, _} = Keyword.pop(opts, :timeout, 30)
+    {timeout, _} = Keyword.pop(opts, :timeout, 5000)
+
+    ConCache.put(:neo4j_sips_cache, :http_headers, @headers)
+
+    token_auth =
+      if opts[:token_auth] != nil do
+        Macro.escape(opts[:token_auth])
+      else
+        if basic_auth = opts[:basic_auth] do
+          username = basic_auth[:username]
+          password = basic_auth[:password]
+          Base.encode64("#{username}:#{password}")
+        else
+          nil
+        end
+      end
+
+    if token_auth != nil do
+      ConCache.put(:neo4j_sips_cache, :http_headers,
+        @headers ++ ["Authorization": "Basic #{token_auth}"])
+    end
 
     case check_uri(url) do
       {:ok, _uri} ->
@@ -77,6 +104,10 @@ defmodule Neo4j.Sips.Server do
 
       {:error, _uri} -> {:error, "invalid server url: #{url}"}
     end
+  end
+
+  def headers do
+    ConCache.get(:neo4j_sips_cache, :http_headers)
   end
 
   defp check_uri(str) do
