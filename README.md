@@ -3,6 +3,8 @@ Neo4j.Sips (0.2)[![Deps Status](https://beta.hexfaktor.org/badge/all/github/flor
 
 A simple Elixir wrapper around the [Neo4j](http://neo4j.com/developer/get-started/) graph database REST API.
 
+*You can also look at: [Bolt.Sips](https://github.com/florinpatrascu/bolt_sips), a similar driver but using Bolt, this time. Neo4j's newest network protocol, designed for high-performance. Cheers!*
+
 ### Install
 
 From [hex.pm](https://hex.pm/packages/neo4j_sips). Edit the `mix.ex` file and add the `neo4j_sips` dependency to the `deps/1 `function:
