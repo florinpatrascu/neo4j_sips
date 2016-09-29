@@ -34,7 +34,7 @@ defmodule Neo4j.Sips.Query do
   defp do_query!(result) do
     case result do
       {:ok, response} -> response
-      {:error, reason} ->  raise Neo4j.Sips.Error, code: reason["code"], message: reason["message"]
+      {:error, reason} ->  raise Neo4j.Sips.Error, code: reason.code, message: reason.message
     end
   end
 
