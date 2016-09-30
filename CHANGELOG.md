@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.2.11 (2016-09-29)
+- fix access error bug. PR provided by @tpunt. Thank you.
+
 ## v0.2.10 (2016-07-24)
 - Enhancements
     * ready for Elixir 1.3
