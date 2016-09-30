@@ -1,7 +1,7 @@
 defmodule Neo4jSips.Mixfile do
   use Mix.Project
 
-  @version "0.2.10"
+  @version "0.2.11"
 
   def project do
     [app: :neo4j_sips,
@@ -29,7 +29,7 @@ defmodule Neo4jSips.Mixfile do
   end
 
   defp deps do
-    [{:httpoison, "~> 0.8"},
+    [{:httpoison, "~> 0.9"},
      {:poison, "~> 2.1"},
      {:con_cache, "~> 0.11"},
      {:poolboy, "~> 1.5"},
