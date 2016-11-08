@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.2.12 (2016-11-07)
+- minor changes: dependencies update
+
 ## v0.2.11 (2016-09-29)
 - fix access error bug. PR provided by @tpunt. Thank you.
 
