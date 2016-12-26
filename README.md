@@ -93,7 +93,8 @@ For more examples, see the test suites.
 - Create new Pull Request
 
 ### Contributors
-...Paul (@dotdotdotpaul)
+
+As reported by Github: [contributions to master, excluding merge commits](https://github.com/florinpatrascu/neo4j_sips/graphs/contributors)
 
 ### Author
 Florin T.PATRASCU (@florinpatrascu)
