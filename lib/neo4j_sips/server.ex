@@ -22,7 +22,7 @@ defmodule Neo4j.Sips.Server do
       }
   """
 
-  defstruct [:server_url, :management_url, :data_url, :data, :timeout]
+  defstruct [:server_url, :management_url, :data_url, :data, :timeout, :bolt]
 
   alias Neo4j.Sips.Http, as: HTTP
 
