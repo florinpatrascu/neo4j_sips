@@ -50,6 +50,10 @@ If your server requires basic authentication, add this to your config file:
 Or:
       
       token_auth: "bmVvNGo6dGVzdA==" # if using an authentication token?!
+
+You can also specify the authentication in the `url` config:
+
+      url: "http://neo4j:neo4j@localhost:7474"
   
 ### Example
 

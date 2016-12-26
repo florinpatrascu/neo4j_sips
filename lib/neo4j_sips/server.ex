@@ -63,26 +63,25 @@ defmodule Neo4j.Sips.Server do
 
     ConCache.put(:neo4j_sips_cache, :http_headers, @headers)
 
-    token_auth =
-      if opts[:token_auth] != nil do
-        Macro.escape(opts[:token_auth])
-      else
-        if basic_auth = opts[:basic_auth] do
-          username = basic_auth[:username]
-          password = basic_auth[:password]
-          Base.encode64("#{username}:#{password}")
-        else
-          nil
-        end
-      end
+    {check_status, uri} = check_uri(url);
+
+    token_auth = cond do
+      opts[:token_auth] -> Macro.escape(opts[:token_auth])
+      basic_auth = opts[:basic_auth] ->
+        username = basic_auth[:username]
+        password = basic_auth[:password]
+        Base.encode64("#{username}:#{password}")
+      uri.userinfo -> Base.encode64(uri.userinfo)
+      true -> nil
+    end
 
     if token_auth != nil do
       ConCache.put(:neo4j_sips_cache, :http_headers,
         @headers ++ ["Authorization": "Basic #{token_auth}"])
     end
 
-    case check_uri(url) do
-      {:ok, _uri} ->
+    case check_status do
+      :ok ->
         # "ping" the server, and check if we can connect
         case HTTP.get("#{url}/db/data/") do
           {:ok, %HTTPoison.Response{body: _body, headers: _headers, status_code: 400,}} ->
@@ -102,7 +101,7 @@ defmodule Neo4j.Sips.Server do
                 data: server_data, timeout: timeout}}
         end
 
-      {:error, _uri} -> {:error, "invalid server url: #{url}"}
+      :error -> {:error, "invalid server url: #{url}"}
     end
   end
 

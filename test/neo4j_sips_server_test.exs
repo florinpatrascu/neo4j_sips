@@ -33,4 +33,22 @@ defmodule Neo4j.Sips.Server.Test do
     assert Keyword.get(Server.headers, :Authorization) == "Basic bmVvNGo6bmVvNGo="
   end
 
+  test "headers containing a proper token for URL with baisc authentication included" do
+    "http://" <> rest = @db_url
+    url = "http://neo4j:neo4j@#{rest}"
+    Server.init(url: url)
+    assert Keyword.get(Server.headers, :Authorization) == "Basic bmVvNGo6bmVvNGo="
+  end
+
+  test "authentication in URL has lower precedence than basic_auth or token_auth" do
+    "http://" <> rest = @db_url
+    url = "http://neo4j123:neo4j123@#{rest}"
+    Server.init(url: url, basic_auth: [username: "neo4j", password: "neo4j"])
+    assert Keyword.get(Server.headers, :Authorization) == "Basic bmVvNGo6bmVvNGo="
+
+    token = "bmVvNGo6dGVzdA="
+    Server.init(url: url, token_auth: token)
+    assert Keyword.get(Server.headers, :Authorization) == "Basic #{token}"
+  end
+
 end
