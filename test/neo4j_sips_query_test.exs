@@ -31,7 +31,7 @@ defmodule Neo4j.Sips.Query.Test do
   end
 
   test "a simple query that should work" do
-    {:ok, row} = Neo4j.query(Neo4j.conn, "match (n:Person {neo4j_sips: true}) return n.name as Name limit 5")
+    {:ok, row} = Neo4j.query(Neo4j.conn, "match (n:Person {neo4j_sips: true}) return n.name as Name ORDER BY Name DESC limit 5")
     assert List.first(row)["Name"] == "Patrick Rothfuss",
            "missing 'The Name of the Wind' database, or data incomplete"
   end
@@ -53,6 +53,7 @@ defmodule Neo4j.Sips.Query.Test do
       RETURN p, p.name AS name, upper(p.name) as NAME,
              coalesce(p.nickname,"n/a") AS nickname,
              { name: p.name, label:head(labels(p))} AS person
+      ORDER BY name DESC
     """
     {:ok, r} = Neo4j.query(Neo4j.conn, cypher)
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.2.15 (2017-01-05)
+- add Travis CI support
+- temporarily suspending the `Neo4j.Sips.Server.Test` suite; requires more thinking, after the url refactoring
+- Elixir 1.3
+- return an error if the driver authentication fails
+
 ## v0.2.14 (2016-12-26)
 - Neo4j 3.1 is now returning the address of the `Bolt` protocol address, during the initial handshake, with the remote http API. At this time, I am expecting a set of keys I convert later to atoms, for efficiency. However, the story with the atoms in Erlang is well-known: `Atoms are not garbage-collected. Once an atom is created, it will never be removed.` This is why I also had to make sure I am allocating all the keys I need **before** this initial handshake. And the `:bolt` atom was not one of them, as I didn't expect to have it, breaking this way the Poison validations. Fixed now.
 
