@@ -2,9 +2,7 @@
 
 Simple Elixir driver wrapped around the [Neo4j](http://neo4j.com/developer/get-started/) graph database REST API. Compatible with the following Neo4j servers: `2.x/3.0.x/3.1.x`
 
-![Build Status](https://travis-ci.org/florinpatrascu/neo4j_sips.svg?branch=master)
-[![Deps Status](https://beta.hexfaktor.org/badge/all/github/florinpatrascu/neo4j_sips.svg)](https://beta.hexfaktor.org/github/florinpatrascu/neo4j_sips)
-==========
+![Build Status](https://travis-ci.org/florinpatrascu/neo4j_sips.svg?branch=master)[![Deps Status](https://beta.hexfaktor.org/badge/all/github/florinpatrascu/neo4j_sips.svg)](https://beta.hexfaktor.org/github/florinpatrascu/neo4j_sips)
 
 Documentation: [hexdocs.pm/neo4j_sips/](http://hexdocs.pm/neo4j_sips/)
 
