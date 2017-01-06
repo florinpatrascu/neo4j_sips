@@ -1,27 +1,32 @@
-Neo4j.Sips (0.2)[Build Status](https://travis-ci.org/florinpatrascu/neo4j_sips.svg?branch=master)[![Deps Status](https://beta.hexfaktor.org/badge/all/github/florinpatrascu/neo4j_sips.svg)](https://beta.hexfaktor.org/github/florinpatrascu/neo4j_sips)
+## Neo4j.Sips
+
+Simple Elixir driver wrapped around the [Neo4j](http://neo4j.com/developer/get-started/) graph database REST API. Compatible with the following Neo4j servers: `2.x/3.0.x/3.1.x`
+
+![Build Status](https://travis-ci.org/florinpatrascu/neo4j_sips.svg?branch=master)
+[![Deps Status](https://beta.hexfaktor.org/badge/all/github/florinpatrascu/neo4j_sips.svg)](https://beta.hexfaktor.org/github/florinpatrascu/neo4j_sips)
 ==========
 
-A simple Elixir wrapper around the [Neo4j](http://neo4j.com/developer/get-started/) graph database REST API.
+Documentation: [hexdocs.pm/neo4j_sips/](http://hexdocs.pm/neo4j_sips/)
 
 *You can also look at: [Bolt.Sips](https://github.com/florinpatrascu/bolt_sips), a similar driver but using Bolt, this time. Neo4j's newest network protocol, designed for high-performance. Cheers!*
 
 ### Install
 
-From [hex.pm](https://hex.pm/packages/neo4j_sips). Edit the `mix.ex` file and add the `neo4j_sips` dependency to the `deps/1 `function:
+[Available in Hex](https://hex.pm/packages/neo4j_sips). Edit the `mix.ex` file and add the `neo4j_sips` dependency to the `deps/1 `function:
 
-    defp deps do
+    def deps do
       [{:neo4j_sips, "~> 0.2"}]
     end
 
 or from Github:
 
-    defp deps do
+    def deps do
       [{:neo4j_sips, github: "florinpatrascu/neo4j_sips"}]
     end
 
 If you're using a local development copy:
 
-    defp deps do
+    def deps do
       [{:neo4j_sips, path: "../neo4j_sips"}]
     end
 
