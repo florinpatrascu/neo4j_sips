@@ -1,7 +1,9 @@
 sudo: required
 services: docker
 language: elixir
+
 elixir:
+  - 1.4
   - 1.3
 
 before_install:
@@ -10,4 +12,3 @@ before_install:
 
 script:
   - mix test
-
