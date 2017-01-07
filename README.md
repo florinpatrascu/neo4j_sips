@@ -1,12 +1,15 @@
 ## Neo4j.Sips
 
-Simple Elixir driver wrapped around the [Neo4j](http://neo4j.com/developer/get-started/) graph database REST API. Compatible with the following Neo4j servers: `2.x/3.0.x/3.1.x`
+A simple Elixir driver using the [Neo4j](http://neo4j.com/developer/get-started/) graph database REST API. Compatible with the following Neo4j servers: `2.x/3.0.x/3.1.x`
 
-![Build Status](https://travis-ci.org/florinpatrascu/neo4j_sips.svg?branch=master)[![Deps Status](https://beta.hexfaktor.org/badge/all/github/florinpatrascu/neo4j_sips.svg)](https://beta.hexfaktor.org/github/florinpatrascu/neo4j_sips)
+![Build Status](https://travis-ci.org/florinpatrascu/neo4j_sips.svg?branch=master)
+[![Deps Status](https://beta.hexfaktor.org/badge/all/github/florinpatrascu/neo4j_sips.svg)](https://beta.hexfaktor.org/github/florinpatrascu/neo4j_sips)
+[![Hex.pm](https://img.shields.io/hexpm/dt/neo4j_sips.svg?maxAge=2592000)](https://hex.pm/packages/neo4j_sips)
+[![Hexdocs.pm](https://img.shields.io/badge/api-hexdocs-brightgreen.svg)](https://hexdocs.pm/neo4j_sips)
 
 Documentation: [hexdocs.pm/neo4j_sips/](http://hexdocs.pm/neo4j_sips/)
 
-*You can also look at: [Bolt.Sips](https://github.com/florinpatrascu/bolt_sips), a similar driver but using Bolt, this time. Neo4j's newest network protocol, designed for high-performance. Cheers!*
+*You can also look at: [Bolt.Sips](https://github.com/florinpatrascu/bolt_sips) - Elixir driver using the Bolt protocol; Neo4j's newest network protocol, designed for high-performance.*
 
 ### Install
 
