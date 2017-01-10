@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.2.16 (2017-01-09)
+- Travis test builds with Elixir 1.3/1.4
+- tame some of the warnings and mild code refactoring
+- updated README
+
 ## v0.2.15 (2017-01-05)
 - add Travis CI support
 - temporarily suspending the `Neo4j.Sips.Server.Test` suite; requires more thinking, after the url refactoring

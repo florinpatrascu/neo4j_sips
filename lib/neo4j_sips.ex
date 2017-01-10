@@ -40,21 +40,20 @@ defmodule Neo4j.Sips do
        timeout: :infinity,
        token_auth: "bmVvNGo6dGVzdA=="
   """
-  def start_link(config) do
-    config = Utils.default_config(config)
-    if !Dict.get(config, :url), do: raise "Neo4j.Sips requires the :url of the database"
+  def start_link(opts) do
+    cnf = Utils.default_config(opts)
 
     ConCache.start_link([], name: :neo4j_sips_cache)
-    ConCache.put(:neo4j_sips_cache, :config, config)
+    ConCache.put(:neo4j_sips_cache, :config, cnf)
 
     poolboy_config = [
       name: {:local, @pool_name},
       worker_module: Neo4j.Sips.Connection,
-      size: Keyword.get(config, :pool_size),
-      max_overflow: Keyword.get(config, :max_overflow)
+      size: Keyword.get(cnf, :pool_size),
+      max_overflow: Keyword.get(cnf, :max_overflow)
     ]
 
-    case Server.init(config) do
+    case Server.init(cnf) do
       {:ok, server} ->
         ConCache.put(:neo4j_sips_cache, :conn, %Neo4j.Sips.Connection{
                     server: server,
@@ -67,7 +66,7 @@ defmodule Neo4j.Sips do
       {:error, message} -> Mix.raise message
     end
 
-    children = [:poolboy.child_spec(@pool_name, poolboy_config, config)]
+    children = [:poolboy.child_spec(@pool_name, poolboy_config, cnf)]
     options = [strategy: :one_for_one, name: __MODULE__]
 
     Supervisor.start_link(children, options)
@@ -200,10 +199,10 @@ defmodule Neo4j.Sips do
   def config, do: ConCache.get(:neo4j_sips_cache, :config)
 
   @doc false
-  def config(key), do: Keyword.get(config, key)
+  def config(key), do: Keyword.get(config(), key)
 
   @doc false
-  def config(key, default), do: Keyword.get(config, key, default)
+  def config(key, default), do: Keyword.get(config(), key, default)
 
   @doc false
   def pool_name, do: @pool_name

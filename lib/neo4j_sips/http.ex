@@ -14,7 +14,7 @@ defmodule Neo4j.Sips.Http do
   @doc false
   @spec process_request_headers(map) :: map
   def process_request_headers(header) do
-    headers ++ header
+    headers() ++ header
   end
 
 end

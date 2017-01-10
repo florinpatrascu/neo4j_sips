@@ -99,7 +99,7 @@ defmodule Neo4j.Sips.Connection do
   returns the version of the Neo4j server you're connected to
   """
   def server_version() do
-    conn.server_version
+    conn().server_version
   end
 
   @doc """
