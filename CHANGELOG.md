@@ -1,6 +1,9 @@
 # Changelog
 
-## v0.2.16 (2017-01-09)
+## v0.2.17 (2017-01-09)
+- relax the `:poison` library version requirements; in relation to Phoenix 1.2.x
+
+## v0.2.16
 - Travis test builds with Elixir 1.3/1.4
 - tame some of the warnings and mild code refactoring
 - updated README
