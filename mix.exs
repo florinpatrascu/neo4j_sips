@@ -6,7 +6,7 @@ defmodule Neo4jSips.Mixfile do
   def project do
     [app: :neo4j_sips,
      version: @version,
-     elixir: "~> 1.4",
+     elixir: "~> 1.3",
      deps: deps(),
      package: package(),
      description: "A very simple and versatile Neo4J Elixir driver",
@@ -32,7 +32,7 @@ defmodule Neo4jSips.Mixfile do
     [
       {:httpoison, "~> 0.11"},
       {:poison, "~> 3.0"},
-      {:con_cache, "~> 0.12"},
+      {:con_cache, "~> 0.11"},
       {:poolboy, "~> 1.5"},
       {:mix_test_watch, "~> 0.2", only: [:dev, :test]},
       {:credo, "~> 0.5", only: [:dev, :test]},
