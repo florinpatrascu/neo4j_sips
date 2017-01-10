@@ -117,8 +117,8 @@ defmodule Neo4j.Sips.Query.Test do
 
     refute length(db_keys) == nil, "You must use a valid Neo4j database"
 
-    key_set = Enum.into(my_keys, HashSet.new)
-    assert length(Enum.filter(db_keys, &(HashSet.member?(key_set, &1)))) > 0
+    key_set = Enum.into(my_keys, MapSet.new)
+    assert length(Enum.filter(db_keys, &(MapSet.member?(key_set, &1)))) > 0
   end
 
 end
