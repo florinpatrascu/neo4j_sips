@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.2.16 (2017-01-07)
+## v0.2.16 (2017-01-09)
 - Travis test builds with Elixir 1.3/1.4
 - tame some of the warnings and mild code refactoring
 - updated README
