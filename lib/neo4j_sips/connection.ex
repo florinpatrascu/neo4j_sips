@@ -34,7 +34,7 @@ defmodule Neo4j.Sips.Connection do
     result = case data do
       {:post, url, body} ->
         log(@post <> "#{url} - #{body}")
-        decode_as_response(HTTP.post!(url, body).body)
+        decode_as_response(HTTP.post!(url, body, [], [timeout: Neo4j.Sips.config(:timeout), recv_timeout: Neo4j.Sips.config(:timeout)]).body)
 
       {:delete, url, _}  ->
         log(@delete <> "#{url}")
@@ -48,8 +48,6 @@ defmodule Neo4j.Sips.Connection do
           {:ok, _} -> []
         end
     end
-    # :random.seed(:os.timestamp)
-    # timeout = state[:timeout] || 5000
     {:reply, result, state}
   end
 
@@ -60,7 +58,7 @@ defmodule Neo4j.Sips.Connection do
 
   defp pool_server(method, connection, body) do
     :poolboy.transaction(
-      Neo4j.Sips.pool_name, &(:gen_server.call(&1, {method, connection, body})),
+      Neo4j.Sips.pool_name, &(:gen_server.call(&1, {method, connection, body}, Neo4j.Sips.config(:timeout))),
       Neo4j.Sips.config(:timeout)
     )
   end
