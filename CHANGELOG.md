@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.2.18
+
+(via https://github.com/florinpatrascu/neo4j_sips/pull/21, thank you: https://github.com/suddenrushofsushi) Currently setting :timeout in Neo4j.Sips config sets the timeout for :poolboy.transaction but neither HTTP calls, nor the :gen_server call wrapping them have the timeout applied.
+
+This version adds:
+
+- HTTP connection and receive timeouts to HTTPoison calls
+- Timeout to the gen_server call which wraps the HTTP calls above.
+
 ## v0.2.17 (2017-01-09)
 - relax the `:poison` library version requirements; in relation to Phoenix 1.2.x
 

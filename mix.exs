@@ -1,7 +1,7 @@
 defmodule Neo4jSips.Mixfile do
   use Mix.Project
 
-  @version "0.2.17"
+  @version "0.2.18"
 
   def project do
     [app: :neo4j_sips,
