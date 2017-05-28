@@ -45,7 +45,7 @@ Edit the `config/config.exs` and describe a Neo4j server endpoint, example:
       url: "http://localhost:7474",
       pool_size: 5,
       max_overflow: 2,
-      timeout: 30
+      timeout: 15_000  # milliseconds!
 
 Run `mix do deps.get, deps.compile`
 
